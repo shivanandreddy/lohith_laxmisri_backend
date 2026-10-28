@@ -15,7 +15,10 @@ const productSchema = new mongoose.Schema({
   stoneDetails: { type: String, default: 'None' }, // e.g., American Diamonds (CZ), Kemp Stones, Pearls
  
   // Array of jewelry image URLs
-  images: [{ type: String }],
+  images: [{ type: String }],seller: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+},
   // YouTube video showing close-up shine, finish, and flexibility of the jewelry item
   youtubeVideoId: { type: String, default: '' },
   isFeatured: { type: Boolean, default: false }
