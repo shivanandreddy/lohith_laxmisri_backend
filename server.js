@@ -15,7 +15,28 @@ import productRoutes from "./routes/product.routes.js";
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  "https://laxmisri.com",
+  "https://www.laxmisri.com",
+  "https://lohith-laxmisri-backend.onrender.com",
+  "https://lohith-laxmisri-frontend.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173"
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
@@ -45,10 +66,11 @@ const PORT = process.env.PORT || 5000;
 
 async function startServer() {
   try {
-    await connectDB();
+    
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      connectDB();
     });
   } catch (error) {
     console.error("Failed to connect to database:", error.message);
