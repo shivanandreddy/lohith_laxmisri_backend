@@ -135,3 +135,16 @@ export const getUserTheme = async (req, res) => {
     res.status(500).json({ message: err.message || "Failed to fetch theme." });
   }
 };
+
+export const getPublicTheme = async (req, res) => {
+  try {
+    // Find the admin user (or fallback to the first user in DB)
+    const adminUser = await User.findOne({ role: "admin" }) || await User.findOne();
+    
+    res.status(200).json({ 
+      themePreference: adminUser?.themePreference || "jira-dark" 
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to fetch theme." });
+  }
+};
