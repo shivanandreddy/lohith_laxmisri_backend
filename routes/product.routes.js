@@ -1,6 +1,4 @@
-
 import express from 'express';
-
 import {
   getProducts,
   getProductById,
@@ -8,36 +6,46 @@ import {
   updateProduct,
   deleteProduct,
 } from '../controllers/product.controller.js';
-
 import {
   protect,
   authorizeRoles,
 } from '../middlewares/auth.middleware.js';
-
 import upload from '../middlewares/upload.middleware.js';
+import multer from 'multer';
 
 const router = express.Router();
 
-// GET all products | Public
-// POST product with images | Admin/User
+// Wrapper to catch multer errors cleanly
+const handleUpload = (field, maxCount) => {
+  return (req, res, next) => {
+    upload.array(field, maxCount)(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+          message: `Upload error: ${err.message} (File may be too large)`,
+        });
+      } else if (err) {
+        return res.status(400).json({ message: err.message });
+      }
+      next();
+    });
+  };
+};
+
 router.route('/')
   .get(getProducts)
   .post(
     protect,
     authorizeRoles('admin', 'user'),
-    upload.array('images', 5),
+    handleUpload('images', 5),
     createProduct
   );
 
-// GET one product | Public
-// PUT update product with additional images | Admin/User
-// DELETE product | Admin/User
 router.route('/:id')
   .get(getProductById)
   .put(
     protect,
     authorizeRoles('admin', 'user'),
-    upload.array('images', 5),
+    handleUpload('images', 5),
     updateProduct
   )
   .delete(

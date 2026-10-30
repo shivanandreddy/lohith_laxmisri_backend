@@ -1,20 +1,19 @@
-import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "../config/cloudinary.js";
+import multer from 'multer';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from '../config/cloudinary.js';
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "laxmisri-jewelry", // Folder name in your Cloudinary account
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    folder: 'laxmisri-products',
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
   },
 });
 
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit per file
-    files: 5,                  // Max 5 files
+    fileSize: 50 * 1024 * 1024, // Increase limit to 5MB per file (adjust as needed)
   },
 });
 
