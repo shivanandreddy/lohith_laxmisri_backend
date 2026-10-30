@@ -101,3 +101,37 @@ export const loginUser = async (req, res) => {
 export const getMe = async (req, res) => {
   res.status(200).json({ user: req.user });
 };
+
+// PUT /api/users/theme
+export async function updateUserTheme(req, res) {
+  try {
+    const userId = req.user.id; // Assumes you have auth middleware setting req.user
+    const { themePreference } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { themePreference },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({ success: true, themePreference: updatedUser.themePreference });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to update theme preference." });
+  }
+}
+
+export const getUserTheme = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.status(200).json({ themeId: user.themePreference || "jira-dark" });
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Failed to fetch theme." });
+  }
+};

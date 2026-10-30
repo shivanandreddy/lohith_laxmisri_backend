@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user', 'customer'], 
     default: 'customer' 
   },
-  avatar: { type: String, default: '' }
+  avatar: { type: String, default: '' },
+  themePreference: { type: String, default: "jira-dark" }
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);
